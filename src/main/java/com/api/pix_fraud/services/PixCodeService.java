@@ -3,7 +3,6 @@ package com.api.pix_fraud.services;
 import java.util.List;
 import java.util.Optional;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.api.pix_fraud.models.PixCode;
@@ -19,7 +18,6 @@ public class PixCodeService {
     private final PixCodeRepository pixCodeRepository;
     private final PixCodeHistoryRepository pixCodeHistoryRepository;
 
-    @Autowired
     public PixCodeService(PixCodeRepository pixCodeRepository, PixCodeHistoryRepository pixCodeHistoryRepository) {
         this.pixCodeRepository = pixCodeRepository;
         this.pixCodeHistoryRepository = pixCodeHistoryRepository;
