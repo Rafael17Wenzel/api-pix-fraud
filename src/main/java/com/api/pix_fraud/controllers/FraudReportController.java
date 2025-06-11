@@ -32,7 +32,7 @@ public class FraudReportController {
     public ResponseEntity<FraudReport> createReport(@RequestBody Map<String, Object> payload) {
         Long pixCodeId = Long.valueOf(payload.get("pix_code_id").toString());
         Long userId = Long.valueOf(payload.get("user_id").toString());
-        Long fraudType = Long.parseLong(payload.get("fraudType").toString());
+        Long fraudType = ((Number) payload.get("fraud_type")).longValue();
         return ResponseEntity.status(201).body(reportService.createReport(pixCodeId, userId, fraudType));
     }
 
@@ -50,4 +50,16 @@ public class FraudReportController {
         FraudReportStatus status = FraudReportStatus.valueOf(payload.get("status"));
         return ResponseEntity.ok(reportService.updateReportStatus(reportId, status));
     }
+
+    @PostMapping("/process")
+    public ResponseEntity<String> startProcessing() {
+        reportService.triggerProcessing();
+        return ResponseEntity.ok("Processamento da fila iniciado.");
+    }
+
+    @GetMapping("/queue")
+    public ResponseEntity<List<FraudReport>> viewQueue() {
+        return ResponseEntity.ok(reportService.getCurrentQueue());
+    }
+
 }

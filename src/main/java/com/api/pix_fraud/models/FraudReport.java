@@ -68,9 +68,10 @@ public class FraudReport {
         return fraudType;
     }
 
-    public void setFraudType(Long id) {
-        this.id = id;
+    public void setFraudType(FraudType fraudType) {
+        this.fraudType = fraudType;
     }
+
 
     public FraudReportStatus getStatus() {
         return status;

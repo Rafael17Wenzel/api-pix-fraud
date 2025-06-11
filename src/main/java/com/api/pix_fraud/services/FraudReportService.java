@@ -1,14 +1,16 @@
 package com.api.pix_fraud.services;
 
+import com.api.pix_fraud.queue.FraudReportProcessor;
 import jakarta.persistence.EntityNotFoundException;
-
 import org.springframework.stereotype.Service;
 
 import com.api.pix_fraud.models.FraudReport;
 import com.api.pix_fraud.models.FraudReportStatus;
+import com.api.pix_fraud.models.FraudType;
 import com.api.pix_fraud.models.PixCode;
 import com.api.pix_fraud.models.User;
 import com.api.pix_fraud.repositories.FraudReportRepository;
+import com.api.pix_fraud.repositories.FraudTypeRepository;
 import com.api.pix_fraud.repositories.PixCodeRepository;
 import com.api.pix_fraud.repositories.UserRepository;
 
@@ -20,24 +22,41 @@ public class FraudReportService {
     private final FraudReportRepository reportRepository;
     private final PixCodeRepository pixCodeRepository;
     private final UserRepository userRepository;
+    private final FraudReportProcessor reportProcessor;
+    private final FraudTypeRepository fraudTypeRepository;
 
-    public FraudReportService(FraudReportRepository reportRepository, PixCodeRepository pixCodeRepository, UserRepository userRepository) {
-        this.reportRepository = reportRepository;
-        this.pixCodeRepository = pixCodeRepository;
-        this.userRepository = userRepository;
-    }
+    public FraudReportService(
+    FraudReportRepository reportRepository,
+    PixCodeRepository pixCodeRepository,
+    UserRepository userRepository,
+    FraudReportProcessor reportProcessor,
+    FraudTypeRepository fraudTypeRepository
+) {
+    this.reportRepository = reportRepository;
+    this.pixCodeRepository = pixCodeRepository;
+    this.userRepository = userRepository;
+    this.reportProcessor = reportProcessor;
+    this.fraudTypeRepository = fraudTypeRepository;
+}
 
-    public FraudReport createReport(Long pixCodeId, Long userId, Long fraudType) {
+    public FraudReport createReport(Long pixCodeId, Long userId, Long fraudTypeId) {
         PixCode pixCode = pixCodeRepository.findById(pixCodeId)
                 .orElseThrow(() -> new EntityNotFoundException("Código PIX não encontrado"));
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new EntityNotFoundException("Usuário não encontrado"));
+        FraudType fraudType = fraudTypeRepository.findById(fraudTypeId)
+                .orElseThrow(() -> new EntityNotFoundException("Tipo de fraude não encontrado"));
 
         FraudReport report = new FraudReport();
         report.setPixCode(pixCode);
         report.setUser(user);
         report.setFraudType(fraudType);
-        return reportRepository.save(report);
+
+        report.setStatus(FraudReportStatus.PENDING);
+
+        FraudReport saved = reportRepository.save(report);
+        reportProcessor.enqueue(saved);
+        return saved;
     }
 
     public List<FraudReport> getReportsByUserId(Long userId) {
@@ -49,5 +68,13 @@ public class FraudReportService {
                 .orElseThrow(() -> new EntityNotFoundException("Relatório não encontrado"));
         report.setStatus(status);
         return reportRepository.save(report);
+    }
+
+    public void triggerProcessing() {
+        reportProcessor.processQueue();
+    }
+
+    public List<FraudReport> getCurrentQueue() {
+        return List.copyOf(reportProcessor.getQueue());
     }
 }
