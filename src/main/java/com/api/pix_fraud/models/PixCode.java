@@ -4,8 +4,6 @@ import java.time.LocalDateTime;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -28,10 +26,6 @@ public class PixCode {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
-
-    @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
-    private PixCodeStatus status;
 
     @Column(name = "created_at", updatable = false)
     private LocalDateTime createdAt = LocalDateTime.now();
@@ -58,14 +52,6 @@ public class PixCode {
 
     public void setUser(User user) {
         this.user = user;
-    }
-
-    public PixCodeStatus getStatus() {
-        return status;
-    }
-
-    public void setStatus(PixCodeStatus status) {
-        this.status = status;
     }
 
     public LocalDateTime getCreatedAt() {

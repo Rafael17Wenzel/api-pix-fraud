@@ -19,11 +19,18 @@ public class WhitelistService {
     private final WhitelistRepository whitelistRepository;
     private final BlacklistRepository blacklistRepository;
     private final UserRepository userRepository;
+    private final AuditService auditService;
 
-    public WhitelistService(WhitelistRepository whitelistRepository, BlacklistRepository blacklistRepository, UserRepository userRepository) {
+    public WhitelistService(
+        WhitelistRepository whitelistRepository,
+        BlacklistRepository blacklistRepository,
+        UserRepository userRepository,
+        AuditService auditService
+    ) {
         this.whitelistRepository = whitelistRepository;
         this.blacklistRepository = blacklistRepository;
         this.userRepository = userRepository;
+        this.auditService = auditService;
     }
 
     public User putUserIntoTheWhitelist(Long id) {
@@ -43,16 +50,26 @@ public class WhitelistService {
         }
 
         Whitelist whitelist = new Whitelist();
-
         whitelist.setUser(existingUser.get());
-
         whitelistRepository.save(whitelist);
+
+        auditService.log(
+            existingUser.get(),
+            "Inserção na whitelist",
+            "Usuário inserido na whitelist, ID: " + id
+        );
 
         return existingUser.get();
     }
 
     public List<User> getWhitelistUsers() {
         List<Whitelist> whitelist = whitelistRepository.findAll();
+
+        auditService.log(
+            null,
+            "Consulta whitelist",
+            "Consulta de todos os usuários na whitelist"
+        );
 
         return whitelist.stream()
                         .map(Whitelist::getUser)

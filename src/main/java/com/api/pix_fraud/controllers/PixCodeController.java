@@ -6,7 +6,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -14,7 +13,6 @@ import org.springframework.web.bind.annotation.RestController;
 import com.api.pix_fraud.models.PixCode;
 import com.api.pix_fraud.models.PixCodeHistory;
 import com.api.pix_fraud.models.User;
-import com.api.pix_fraud.models.dto.PixCodeStatusDTO;
 import com.api.pix_fraud.services.PixCodeService;
 
 @RestController
@@ -42,12 +40,6 @@ public class PixCodeController {
             return ResponseEntity.notFound().build();
         }
         return ResponseEntity.ok(pixCodes);
-    }
-
-    @PutMapping("/{pixCodeId}")
-    public ResponseEntity<PixCode> updateStatus(@PathVariable Long pixCodeId, @RequestBody PixCodeStatusDTO status) {
-        PixCode updatedPixCode = pixCodeService.updateStatus(pixCodeId, status);
-        return ResponseEntity.ok(updatedPixCode);
     }
 
     @GetMapping("/history/{pixCodeId}")

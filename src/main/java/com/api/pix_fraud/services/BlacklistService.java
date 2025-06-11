@@ -19,11 +19,18 @@ public class BlacklistService {
     private final BlacklistRepository blacklistRepository;
     private final WhitelistRepository whitelistRepository;
     private final UserRepository userRepository;
+    private final AuditService auditService;
 
-    public BlacklistService(BlacklistRepository blacklistRepository, WhitelistRepository whitelistRepository, UserRepository userRepository) {
+    public BlacklistService(
+        BlacklistRepository blacklistRepository,
+        WhitelistRepository whitelistRepository,
+        UserRepository userRepository,
+        AuditService auditService
+    ) {
         this.blacklistRepository = blacklistRepository;
         this.whitelistRepository = whitelistRepository;
         this.userRepository = userRepository;
+        this.auditService = auditService;
     }
 
     public User putUserIntoTheBlacklist(Long id) {
@@ -43,16 +50,26 @@ public class BlacklistService {
         }
 
         Blacklist blacklist = new Blacklist();
-
         blacklist.setUser(existingUser.get());
-
         blacklistRepository.save(blacklist);
+
+        auditService.log(
+            existingUser.get(),
+            "Inserção na blacklist",
+            "Usuário inserido na blacklist, ID: " + id
+        );
 
         return existingUser.get();
     }
 
     public List<User> getBlacklistUsers() {
         List<Blacklist> blacklist = blacklistRepository.findAll();
+
+        auditService.log(
+            null,
+            "Consulta blacklist",
+            "Consulta de todos os usuários na blacklist"
+        );
 
         return blacklist.stream()
                         .map(Blacklist::getUser)

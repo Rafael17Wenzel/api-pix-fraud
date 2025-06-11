@@ -8,7 +8,6 @@ import org.springframework.stereotype.Service;
 import com.api.pix_fraud.models.PixCode;
 import com.api.pix_fraud.models.PixCodeHistory;
 import com.api.pix_fraud.models.User;
-import com.api.pix_fraud.models.dto.PixCodeStatusDTO;
 import com.api.pix_fraud.repositories.PixCodeHistoryRepository;
 import com.api.pix_fraud.repositories.PixCodeRepository;
 
@@ -17,34 +16,37 @@ public class PixCodeService {
 
     private final PixCodeRepository pixCodeRepository;
     private final PixCodeHistoryRepository pixCodeHistoryRepository;
+    private final AuditService auditService;
 
-    public PixCodeService(PixCodeRepository pixCodeRepository, PixCodeHistoryRepository pixCodeHistoryRepository) {
+    public PixCodeService(
+        PixCodeRepository pixCodeRepository,
+        PixCodeHistoryRepository pixCodeHistoryRepository,
+        AuditService auditService
+    ) {
         this.pixCodeRepository = pixCodeRepository;
         this.pixCodeHistoryRepository = pixCodeHistoryRepository;
+        this.auditService = auditService;
     }
 
     public PixCode createPixCode(PixCode pixCode) {
-        return pixCodeRepository.save(pixCode);
+        PixCode created = pixCodeRepository.save(pixCode);
+        auditService.log(
+            pixCode.getUser(),
+            "Criação de código PIX",
+            "Código PIX criado com chave: " + created.getCode()
+        );
+        return created;
     }
 
     public List<PixCode> getPixCodesByUser(User user) {
-        return pixCodeRepository.findByUser(user);
+        List<PixCode> pixCodes = pixCodeRepository.findByUser(user);
+        auditService.log(user, "Consulta de códigos PIX", "Usuário consultou seus códigos PIX");
+        return pixCodes;
     }
 
     public Optional<PixCode> getPixCodeById(Long id, User user) {
-        return pixCodeRepository.findByIdAndUser(id, user);
-    }
-
-    public PixCode updateStatus(Long pixCodeId, PixCodeStatusDTO status) {
-        PixCode pixCode = pixCodeRepository.findById(pixCodeId).orElseThrow();
-        pixCode.setStatus(status.getStatus());
-        pixCodeRepository.save(pixCode);
-
-        PixCodeHistory history = new PixCodeHistory();
-        history.setPixCode(pixCode);
-        history.setStatus(status.getStatus());
-        pixCodeHistoryRepository.save(history);
-
+        Optional<PixCode> pixCode = pixCodeRepository.findByIdAndUser(id, user);
+        auditService.log(user, "Consulta de código PIX por ID", "ID consultado: " + id);
         return pixCode;
     }
 

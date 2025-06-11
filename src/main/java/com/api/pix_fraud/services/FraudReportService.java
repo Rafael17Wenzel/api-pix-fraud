@@ -24,20 +24,23 @@ public class FraudReportService {
     private final UserRepository userRepository;
     private final FraudReportProcessor reportProcessor;
     private final FraudTypeRepository fraudTypeRepository;
+    private final AuditService auditService;
 
     public FraudReportService(
-    FraudReportRepository reportRepository,
-    PixCodeRepository pixCodeRepository,
-    UserRepository userRepository,
-    FraudReportProcessor reportProcessor,
-    FraudTypeRepository fraudTypeRepository
-) {
-    this.reportRepository = reportRepository;
-    this.pixCodeRepository = pixCodeRepository;
-    this.userRepository = userRepository;
-    this.reportProcessor = reportProcessor;
-    this.fraudTypeRepository = fraudTypeRepository;
-}
+        FraudReportRepository reportRepository,
+        PixCodeRepository pixCodeRepository,
+        UserRepository userRepository,
+        FraudReportProcessor reportProcessor,
+        FraudTypeRepository fraudTypeRepository,
+        AuditService auditService
+    ) {
+        this.reportRepository = reportRepository;
+        this.pixCodeRepository = pixCodeRepository;
+        this.userRepository = userRepository;
+        this.reportProcessor = reportProcessor;
+        this.fraudTypeRepository = fraudTypeRepository;
+        this.auditService = auditService;
+    }
 
     public FraudReport createReport(Long pixCodeId, Long userId, Long fraudTypeId) {
         PixCode pixCode = pixCodeRepository.findById(pixCodeId)
@@ -56,10 +59,19 @@ public class FraudReportService {
 
         FraudReport saved = reportRepository.save(report);
         reportProcessor.enqueue(saved);
+
+        auditService.log(user, "Criação de relatório de fraude",
+                "Criado relatório ID " + saved.getId() + " para PixCode ID " + pixCodeId);
+
         return saved;
     }
 
     public List<FraudReport> getReportsByUserId(Long userId) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new EntityNotFoundException("Usuário não encontrado"));
+
+        auditService.log(user, "Consulta relatórios de fraude", "Consultou relatórios do usuário ID " + userId);
+
         return reportRepository.findByUserId(userId);
     }
 
@@ -67,7 +79,12 @@ public class FraudReportService {
         FraudReport report = reportRepository.findById(reportId)
                 .orElseThrow(() -> new EntityNotFoundException("Relatório não encontrado"));
         report.setStatus(status);
-        return reportRepository.save(report);
+        FraudReport updated = reportRepository.save(report);
+
+        auditService.log(report.getUser(), "Atualização status relatório de fraude",
+                "Relatório ID " + reportId + " atualizado para status " + status);
+
+        return updated;
     }
 
     public void triggerProcessing() {
