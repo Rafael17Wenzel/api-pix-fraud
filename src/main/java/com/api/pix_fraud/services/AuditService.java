@@ -1,7 +1,7 @@
 package com.api.pix_fraud.services;
 
 import com.api.pix_fraud.models.AuditLog;
-import com.api.pix_fraud.models.User;
+import com.api.pix_fraud.models.Person;
 import com.api.pix_fraud.repositories.AuditLogRepository;
 import org.springframework.stereotype.Service;
 
@@ -14,7 +14,7 @@ public class AuditService {
         this.auditLogRepository = auditLogRepository;
     }
 
-    public void log(User user, String action, String details) {
+    public void log(Person user, String action, String details) {
         AuditLog log = new AuditLog();
         log.setUser(user);
         log.setAction(action);

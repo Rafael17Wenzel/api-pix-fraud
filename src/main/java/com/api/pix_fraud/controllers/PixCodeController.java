@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.api.pix_fraud.models.PixCode;
 import com.api.pix_fraud.models.PixCodeHistory;
-import com.api.pix_fraud.models.User;
+import com.api.pix_fraud.models.Person;
 import com.api.pix_fraud.services.PixCodeService;
 
 @RestController
@@ -33,7 +33,7 @@ public class PixCodeController {
 
     @GetMapping("/{userId}")
     public ResponseEntity<List<PixCode>> getPixCodesByUser(@PathVariable Long userId) {
-        User user = new User();
+        Person user = new Person();
         user.setId(userId);
         List<PixCode> pixCodes = pixCodeService.getPixCodesByUser(user);
         if (pixCodes.isEmpty()) {

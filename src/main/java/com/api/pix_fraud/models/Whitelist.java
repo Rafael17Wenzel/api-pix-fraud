@@ -21,7 +21,7 @@ public class Whitelist {
 
     @OneToOne(optional = false)
     @JoinColumn(name = "user_id")
-    private User user;
+    private Person user;
 
     @Column(name = "added_at", nullable = false)
     private LocalDateTime createdAt = LocalDateTime.now();
@@ -34,11 +34,11 @@ public class Whitelist {
         this.id = id;
     }
 
-    public User getUser() {
+    public Person getUser() {
         return user;
     }
 
-    public void setUser(User user) {
+    public void setUser(Person user) {
         this.user = user;
     }
 

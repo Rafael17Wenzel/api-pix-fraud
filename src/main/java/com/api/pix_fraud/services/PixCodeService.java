@@ -7,7 +7,7 @@ import org.springframework.stereotype.Service;
 
 import com.api.pix_fraud.models.PixCode;
 import com.api.pix_fraud.models.PixCodeHistory;
-import com.api.pix_fraud.models.User;
+import com.api.pix_fraud.models.Person;
 import com.api.pix_fraud.repositories.PixCodeHistoryRepository;
 import com.api.pix_fraud.repositories.PixCodeRepository;
 
@@ -38,13 +38,13 @@ public class PixCodeService {
         return created;
     }
 
-    public List<PixCode> getPixCodesByUser(User user) {
+    public List<PixCode> getPixCodesByUser(Person user) {
         List<PixCode> pixCodes = pixCodeRepository.findByUser(user);
         auditService.log(user, "Consulta de códigos PIX", "Usuário consultou seus códigos PIX");
         return pixCodes;
     }
 
-    public Optional<PixCode> getPixCodeById(Long id, User user) {
+    public Optional<PixCode> getPixCodeById(Long id, Person user) {
         Optional<PixCode> pixCode = pixCodeRepository.findByIdAndUser(id, user);
         auditService.log(user, "Consulta de código PIX por ID", "ID consultado: " + id);
         return pixCode;

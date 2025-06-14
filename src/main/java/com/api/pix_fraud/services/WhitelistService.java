@@ -8,23 +8,23 @@ import org.springframework.stereotype.Service;
 
 import com.api.pix_fraud.models.Whitelist;
 import com.api.pix_fraud.models.Blacklist;
-import com.api.pix_fraud.models.User;
+import com.api.pix_fraud.models.Person;
 import com.api.pix_fraud.repositories.WhitelistRepository;
 import com.api.pix_fraud.repositories.BlacklistRepository;
-import com.api.pix_fraud.repositories.UserRepository;
+import com.api.pix_fraud.repositories.PersonRepository;
 
 @Service
 public class WhitelistService {
 
     private final WhitelistRepository whitelistRepository;
     private final BlacklistRepository blacklistRepository;
-    private final UserRepository userRepository;
+    private final PersonRepository userRepository;
     private final AuditService auditService;
 
     public WhitelistService(
         WhitelistRepository whitelistRepository,
         BlacklistRepository blacklistRepository,
-        UserRepository userRepository,
+        PersonRepository userRepository,
         AuditService auditService
     ) {
         this.whitelistRepository = whitelistRepository;
@@ -33,8 +33,8 @@ public class WhitelistService {
         this.auditService = auditService;
     }
 
-    public User putUserIntoTheWhitelist(Long id) {
-        Optional<User> existingUser = userRepository.findById(id);
+    public Person putUserIntoTheWhitelist(Long id) {
+        Optional<Person> existingUser = userRepository.findById(id);
         if (!existingUser.isPresent()) {
             throw new RuntimeException("Usuário não existe");
         }
@@ -62,7 +62,7 @@ public class WhitelistService {
         return existingUser.get();
     }
 
-    public List<User> getWhitelistUsers() {
+    public List<Person> getWhitelistUsers() {
         List<Whitelist> whitelist = whitelistRepository.findAll();
 
         auditService.log(

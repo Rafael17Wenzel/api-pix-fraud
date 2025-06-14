@@ -3,7 +3,7 @@ package com.api.pix_fraud.controllers;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.api.pix_fraud.models.User;
+import com.api.pix_fraud.models.Person;
 import com.api.pix_fraud.models.dto.UserIdDTO;
 import com.api.pix_fraud.services.BlacklistService;
 
@@ -25,16 +25,16 @@ public class BlacklistController {
     }
 
     @PostMapping
-    public ResponseEntity<User> postUserInBlacklist(@RequestBody UserIdDTO userDTO) {
-        User blacklistUser = blacklistService.putUserIntoTheBlacklist(userDTO.getId());
+    public ResponseEntity<Person> postUserInBlacklist(@RequestBody UserIdDTO userDTO) {
+        Person blacklistUser = blacklistService.putUserIntoTheBlacklist(userDTO.getId());
 
         return ResponseEntity.ok(blacklistUser);
     }
     
     
     @GetMapping
-    public ResponseEntity<List<User>> getMethodName() {
-        List<User> users = blacklistService.getBlacklistUsers();
+    public ResponseEntity<List<Person>> getMethodName() {
+        List<Person> users = blacklistService.getBlacklistUsers();
 
         return ResponseEntity.ok(users);
     }

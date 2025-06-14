@@ -7,10 +7,10 @@ import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
 
 import com.api.pix_fraud.models.Blacklist;
-import com.api.pix_fraud.models.User;
+import com.api.pix_fraud.models.Person;
 import com.api.pix_fraud.models.Whitelist;
 import com.api.pix_fraud.repositories.BlacklistRepository;
-import com.api.pix_fraud.repositories.UserRepository;
+import com.api.pix_fraud.repositories.PersonRepository;
 import com.api.pix_fraud.repositories.WhitelistRepository;
 
 @Service
@@ -18,13 +18,13 @@ public class BlacklistService {
 
     private final BlacklistRepository blacklistRepository;
     private final WhitelistRepository whitelistRepository;
-    private final UserRepository userRepository;
+    private final PersonRepository userRepository;
     private final AuditService auditService;
 
     public BlacklistService(
         BlacklistRepository blacklistRepository,
         WhitelistRepository whitelistRepository,
-        UserRepository userRepository,
+        PersonRepository userRepository,
         AuditService auditService
     ) {
         this.blacklistRepository = blacklistRepository;
@@ -33,8 +33,8 @@ public class BlacklistService {
         this.auditService = auditService;
     }
 
-    public User putUserIntoTheBlacklist(Long id) {
-        Optional<User> existingUser = userRepository.findById(id);
+    public Person putUserIntoTheBlacklist(Long id) {
+        Optional<Person> existingUser = userRepository.findById(id);
         if (!existingUser.isPresent()) {
             throw new RuntimeException("Usuário não existe");
         }
@@ -62,7 +62,7 @@ public class BlacklistService {
         return existingUser.get();
     }
 
-    public List<User> getBlacklistUsers() {
+    public List<Person> getBlacklistUsers() {
         List<Blacklist> blacklist = blacklistRepository.findAll();
 
         auditService.log(

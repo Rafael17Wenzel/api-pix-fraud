@@ -13,7 +13,7 @@ public class AuditLog {
 
     @ManyToOne(optional = true)
     @JoinColumn(name = "user_id", foreignKey = @ForeignKey(name = "fk_user"))
-    private User user;
+    private Person user;
 
     @Column(nullable = false)
     private String action;
@@ -28,11 +28,11 @@ public class AuditLog {
         return id;
     }
 
-    public User getUser() {
+    public Person getUser() {
         return user;
     }
 
-    public void setUser(User user) {
+    public void setUser(Person user) {
         this.user = user;
     }
 

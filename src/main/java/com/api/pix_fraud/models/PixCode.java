@@ -25,7 +25,7 @@ public class PixCode {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false)
-    private User user;
+    private Person user;
 
     @Column(name = "created_at", updatable = false)
     private LocalDateTime createdAt = LocalDateTime.now();
@@ -46,11 +46,11 @@ public class PixCode {
         this.code = code;
     }
 
-    public User getUser() {
+    public Person getUser() {
         return user;
     }
 
-    public void setUser(User user) {
+    public void setUser(Person user) {
         this.user = user;
     }
 

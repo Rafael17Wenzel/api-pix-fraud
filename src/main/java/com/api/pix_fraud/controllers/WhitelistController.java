@@ -3,7 +3,7 @@ package com.api.pix_fraud.controllers;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.api.pix_fraud.models.User;
+import com.api.pix_fraud.models.Person;
 import com.api.pix_fraud.models.dto.UserIdDTO;
 import com.api.pix_fraud.services.WhitelistService;
 
@@ -25,16 +25,16 @@ public class WhitelistController {
     }
 
     @PostMapping
-    public ResponseEntity<User> postUserInwhitelist(@RequestBody UserIdDTO userDTO) {
-        User whitelistUser = whitelistService.putUserIntoTheWhitelist(userDTO.getId());
+    public ResponseEntity<Person> postUserInwhitelist(@RequestBody UserIdDTO userDTO) {
+        Person whitelistUser = whitelistService.putUserIntoTheWhitelist(userDTO.getId());
 
         return ResponseEntity.ok(whitelistUser);
     }
     
     
     @GetMapping
-    public ResponseEntity<List<User>> getMethodName() {
-        List<User> users = whitelistService.getWhitelistUsers();
+    public ResponseEntity<List<Person>> getMethodName() {
+        List<Person> users = whitelistService.getWhitelistUsers();
 
         return ResponseEntity.ok(users);
     }

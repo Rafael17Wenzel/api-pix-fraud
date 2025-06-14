@@ -8,11 +8,11 @@ import com.api.pix_fraud.models.FraudReport;
 import com.api.pix_fraud.models.FraudReportStatus;
 import com.api.pix_fraud.models.FraudType;
 import com.api.pix_fraud.models.PixCode;
-import com.api.pix_fraud.models.User;
+import com.api.pix_fraud.models.Person;
 import com.api.pix_fraud.repositories.FraudReportRepository;
 import com.api.pix_fraud.repositories.FraudTypeRepository;
 import com.api.pix_fraud.repositories.PixCodeRepository;
-import com.api.pix_fraud.repositories.UserRepository;
+import com.api.pix_fraud.repositories.PersonRepository;
 
 import java.util.List;
 
@@ -21,7 +21,7 @@ public class FraudReportService {
 
     private final FraudReportRepository reportRepository;
     private final PixCodeRepository pixCodeRepository;
-    private final UserRepository userRepository;
+    private final PersonRepository userRepository;
     private final FraudReportProcessor reportProcessor;
     private final FraudTypeRepository fraudTypeRepository;
     private final AuditService auditService;
@@ -29,7 +29,7 @@ public class FraudReportService {
     public FraudReportService(
         FraudReportRepository reportRepository,
         PixCodeRepository pixCodeRepository,
-        UserRepository userRepository,
+        PersonRepository userRepository,
         FraudReportProcessor reportProcessor,
         FraudTypeRepository fraudTypeRepository,
         AuditService auditService
@@ -45,7 +45,7 @@ public class FraudReportService {
     public FraudReport createReport(Long pixCodeId, Long userId, Long fraudTypeId) {
         PixCode pixCode = pixCodeRepository.findById(pixCodeId)
                 .orElseThrow(() -> new EntityNotFoundException("Código PIX não encontrado"));
-        User user = userRepository.findById(userId)
+        Person user = userRepository.findById(userId)
                 .orElseThrow(() -> new EntityNotFoundException("Usuário não encontrado"));
         FraudType fraudType = fraudTypeRepository.findById(fraudTypeId)
                 .orElseThrow(() -> new EntityNotFoundException("Tipo de fraude não encontrado"));
@@ -67,7 +67,7 @@ public class FraudReportService {
     }
 
     public List<FraudReport> getReportsByUserId(Long userId) {
-        User user = userRepository.findById(userId)
+        Person user = userRepository.findById(userId)
                 .orElseThrow(() -> new EntityNotFoundException("Usuário não encontrado"));
 
         auditService.log(user, "Consulta relatórios de fraude", "Consultou relatórios do usuário ID " + userId);

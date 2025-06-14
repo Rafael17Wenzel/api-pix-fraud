@@ -27,7 +27,7 @@ public class FraudReport {
 
     @ManyToOne(optional = false)
     @JoinColumn(name = "user_id")
-    private User user;
+    private Person user;
 
     @ManyToOne(optional = false)
     @JoinColumn(name = "fraud_type_id")
@@ -56,11 +56,11 @@ public class FraudReport {
         this.pixCode = pixCode;
     }
 
-    public User getUser() {
+    public Person getUser() {
         return user;
     }
 
-    public void setUser(User user) {
+    public void setUser(Person user) {
         this.user = user;
     }
 
