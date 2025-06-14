@@ -5,6 +5,7 @@ import java.util.Collections;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -62,6 +63,16 @@ public class PersonController {
         } catch (Exception e) {
             return ResponseEntity.badRequest()
                     .body(Collections.singletonMap("error", e.getMessage()));
+        }
+    }
+
+    @PatchMapping("/{id}/deactivate")
+    public ResponseEntity<?> deactivateUser(@PathVariable Long id) {
+        try {
+            personService.deactivateUser(id);
+            return ResponseEntity.ok(Collections.singletonMap("message", "User deactivated successfully"));
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(404).body(Collections.singletonMap("error", e.getMessage()));
         }
     }
 }

@@ -27,7 +27,7 @@ public class PersonIndividual {
     @Column(length = 255)
     private String name;
 
-    @Column(nullable = false, unique = true, length = 14)
+    @Column(nullable = false, length = 14)
     private String cpf;
 
     @Column(name = "birth_date", nullable = false)

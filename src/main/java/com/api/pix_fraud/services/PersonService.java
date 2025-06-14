@@ -2,7 +2,9 @@ package com.api.pix_fraud.services;
 
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.PathVariable;
 
 import com.api.pix_fraud.exceptions.ValidationException;
 import com.api.pix_fraud.models.Person;
@@ -146,7 +148,7 @@ public class PersonService {
     }
 
     public Object findUserDetailsById(Long id) {
-        Person person = personRepository.findById(id)
+        Person person = personRepository.findByIdAndActiveTrue(id)
                 .orElseThrow(() -> new RuntimeException("Usuário não encontrado"));
 
         Optional<PersonIndividual> individual = individualRepository.findById(id);
@@ -199,4 +201,17 @@ public class PersonService {
         auditService.log(person, "Consulta de usuário por e-mail", "E-mail consultado: " + email);
         return person;
     }
+
+    public void deactivateUser(Long id) {
+        Person person = personRepository.findById(id)
+            .orElseThrow(() -> new RuntimeException("User not found"));
+
+        if(!person.isActive()) {
+            throw new RuntimeException("User is already deactivated");
+        }
+
+        person.setActive(false);
+        personRepository.save(person);
+    }
+
 }

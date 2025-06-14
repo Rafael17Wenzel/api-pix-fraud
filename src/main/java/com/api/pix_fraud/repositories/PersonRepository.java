@@ -10,5 +10,7 @@ import com.api.pix_fraud.models.Person;
 @Repository
 public interface PersonRepository extends JpaRepository<Person, Long> {
 
+    Optional<Person> findByIdAndActiveTrue(Long id);
+
     Optional<Person> findByEmailAndActiveTrue(String email);
 }

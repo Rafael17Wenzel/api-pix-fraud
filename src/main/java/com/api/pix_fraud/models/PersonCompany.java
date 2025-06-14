@@ -23,7 +23,7 @@ public class PersonCompany {
     @JoinColumn(name = "user_id")
     private Person person;
 
-    @Column(nullable = false, unique = true, length = 18)
+    @Column(nullable = false, length = 18)
     private String cnpj;
 
     @Column(name = "corporate_name", nullable = false, length = 255)
