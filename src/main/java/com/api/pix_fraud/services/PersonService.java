@@ -1,10 +1,7 @@
 package com.api.pix_fraud.services;
 
-
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.PathVariable;
 
 import com.api.pix_fraud.exceptions.ValidationException;
 import com.api.pix_fraud.models.Person;
@@ -54,6 +51,14 @@ public class PersonService {
 
         if (dto.getName() == null || dto.getName().trim().isEmpty()) {
             errors.add("Nome é obrigatório.");
+        }
+
+        if (dto.getPhone() == null || dto.getCpf().trim().isEmpty()) {
+            errors.add("CPF é obrigatório.");
+        }
+
+        if (dto.getCpf() == null || dto.getCpf().trim().isEmpty()) {
+            errors.add("CPF é obrigatório.");
         }
 
         if (dto.getCpf() == null || dto.getCpf().trim().isEmpty()) {
@@ -159,7 +164,6 @@ public class PersonService {
             dto.setId(person.getId());
             dto.setEmail(person.getEmail());
             dto.setPhone(person.getPhone());
-            dto.setActive(person.isActive());
 
             dto.setName(i.getName());
             dto.setCpf(i.getCpf());
@@ -177,7 +181,6 @@ public class PersonService {
             dto.setId(person.getId());
             dto.setEmail(person.getEmail());
             dto.setPhone(person.getPhone());
-            dto.setActive(person.isActive());
 
             dto.setCnpj(c.getCnpj());
             dto.setCorporateName(c.getCorporateName());

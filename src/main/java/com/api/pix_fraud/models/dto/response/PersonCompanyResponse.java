@@ -1,5 +1,8 @@
 package com.api.pix_fraud.models.dto.response;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+
 public class PersonCompanyResponse {
 
     private Long id;
@@ -10,6 +13,8 @@ public class PersonCompanyResponse {
     private String cnpj;
     private String corporateName;
     private String companyName;
+
+    private LocalDateTime createdAt;
 
 
     
@@ -72,5 +77,9 @@ public class PersonCompanyResponse {
 
     public void setCompanyName(String companyName) {
         this.companyName = companyName;
+    }
+
+    public LocalDateTime getCreatedAt() {
+        return createdAt;
     }
 }

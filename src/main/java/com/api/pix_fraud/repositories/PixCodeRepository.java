@@ -9,8 +9,10 @@ import java.util.List;
 import java.util.Optional;
 
 public interface PixCodeRepository extends JpaRepository<PixCode, Long> {
-    
-    List<PixCode> findByUser(Person user);
 
-    Optional<PixCode> findByIdAndUser(Long id, Person user);
+    Optional<PixCode> findByCodeAndPersonActiveTrue(String code);
+    
+    List<PixCode> findByPerson(Person user);
+
+    Optional<PixCode> findByIdAndPerson(Long id, Person user);
 }

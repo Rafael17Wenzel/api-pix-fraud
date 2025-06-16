@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.api.pix_fraud.exceptions.ValidationException;
 import com.api.pix_fraud.models.Person;
 import com.api.pix_fraud.models.dto.request.PersonCompanyDTO;
 import com.api.pix_fraud.models.dto.request.PersonIndividualDTO;
@@ -29,9 +30,12 @@ public class PersonController {
         try {
             Person created = personService.registerPersonIndividual(dto);
             return ResponseEntity.status(201).body(created);
+        } catch (ValidationException e) {
+            return ResponseEntity.badRequest()
+                .body(Collections.singletonMap("errors", e.getErrors()));
         } catch (RuntimeException e) {
             return ResponseEntity.badRequest()
-                    .body(Collections.singletonMap("error", e.getMessage()));
+                .body(Collections.singletonMap("error", e.getMessage()));
         }
     }
 
@@ -40,9 +44,12 @@ public class PersonController {
         try {
             Person created = personService.registerPersonCompany(dto);
             return ResponseEntity.status(201).body(created);
+        } catch (ValidationException e) {
+            return ResponseEntity.badRequest()
+                .body(Collections.singletonMap("errors", e.getErrors()));
         } catch (RuntimeException e) {
             return ResponseEntity.badRequest()
-                    .body(Collections.singletonMap("error", e.getMessage()));
+                .body(Collections.singletonMap("error", e.getMessage()));
         }
     }
 
@@ -50,9 +57,12 @@ public class PersonController {
     public ResponseEntity<?> getUserById(@PathVariable Long id) {
         try {
             return ResponseEntity.ok(personService.findUserDetailsById(id));
-        } catch (Exception e) {
+        } catch (ValidationException e) {
             return ResponseEntity.badRequest()
-                    .body(Collections.singletonMap("error", e.getMessage()));
+                .body(Collections.singletonMap("errors", e.getErrors()));
+        } catch (RuntimeException e) {
+            return ResponseEntity.badRequest()
+                .body(Collections.singletonMap("error", e.getMessage()));
         }
     }
 
@@ -60,9 +70,12 @@ public class PersonController {
     public ResponseEntity<?> getUserByEmail(@PathVariable String email) {
         try {
             return ResponseEntity.ok(personService.findUserByEmail(email));
-        } catch (Exception e) {
+        } catch (ValidationException e) {
             return ResponseEntity.badRequest()
-                    .body(Collections.singletonMap("error", e.getMessage()));
+                .body(Collections.singletonMap("errors", e.getErrors()));
+        } catch (RuntimeException e) {
+            return ResponseEntity.badRequest()
+                .body(Collections.singletonMap("error", e.getMessage()));
         }
     }
 
@@ -71,8 +84,12 @@ public class PersonController {
         try {
             personService.deactivateUser(id);
             return ResponseEntity.ok(Collections.singletonMap("message", "User deactivated successfully"));
+        } catch (ValidationException e) {
+            return ResponseEntity.badRequest()
+                .body(Collections.singletonMap("errors", e.getErrors()));
         } catch (RuntimeException e) {
-            return ResponseEntity.status(404).body(Collections.singletonMap("error", e.getMessage()));
+            return ResponseEntity.badRequest()
+                .body(Collections.singletonMap("error", e.getMessage()));
         }
     }
 }

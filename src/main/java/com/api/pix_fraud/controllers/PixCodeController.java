@@ -1,5 +1,6 @@
 package com.api.pix_fraud.controllers;
 
+import java.util.Collections;
 import java.util.List;
 
 import org.springframework.http.ResponseEntity;
@@ -10,10 +11,12 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.api.pix_fraud.exceptions.ValidationException;
 import com.api.pix_fraud.models.PixCode;
 import com.api.pix_fraud.models.PixCodeHistory;
-import com.api.pix_fraud.models.Person;
+import com.api.pix_fraud.models.dto.request.PixCodeRequest;
 import com.api.pix_fraud.services.PixCodeService;
+
 
 @RestController
 @RequestMapping("/api/pix_codes")
@@ -26,20 +29,45 @@ public class PixCodeController {
     }
 
     @PostMapping
-    public ResponseEntity<PixCode> createPixCode(@RequestBody PixCode pixCode) {
-        PixCode createdPixCode = pixCodeService.createPixCode(pixCode);
-        return ResponseEntity.status(201).body(createdPixCode);
+    public ResponseEntity<?> createPixCode(@RequestBody PixCodeRequest pixCodeRequest) {
+        try {
+            PixCode createdPixCode = pixCodeService.createPixCode(pixCodeRequest);
+
+            return ResponseEntity.status(201).body(createdPixCode);
+        } catch (ValidationException e) {
+            return ResponseEntity.badRequest()
+                .body(Collections.singletonMap("errors", e.getErrors()));
+        } catch (RuntimeException e) {
+            return ResponseEntity.badRequest()
+                .body(Collections.singletonMap("error", e.getMessage()));
+        }
     }
 
-    @GetMapping("/{userId}")
-    public ResponseEntity<List<PixCode>> getPixCodesByUser(@PathVariable Long userId) {
-        Person user = new Person();
-        user.setId(userId);
-        List<PixCode> pixCodes = pixCodeService.getPixCodesByUser(user);
-        if (pixCodes.isEmpty()) {
-            return ResponseEntity.notFound().build();
+    @GetMapping("/{id}")
+    public ResponseEntity<?> getPixCode(@PathVariable Long id) {
+        try {
+            return ResponseEntity.ok(pixCodeService.getPixCodeById(id));
+        } catch (ValidationException e) {
+            return ResponseEntity.badRequest()
+                .body(Collections.singletonMap("errors", e.getErrors()));
+        } catch (RuntimeException e) {
+            return ResponseEntity.badRequest()
+                .body(Collections.singletonMap("error", e.getMessage()));
         }
-        return ResponseEntity.ok(pixCodes);
+    }
+    
+
+    @GetMapping("/person/{personId}")
+    public ResponseEntity<?> getPixCodesByUser(@PathVariable Long personId) {
+        try {
+            return ResponseEntity.ok(pixCodeService.getPixCodesByUser(personId));
+        } catch (ValidationException e) {
+            return ResponseEntity.badRequest()
+                .body(Collections.singletonMap("errors", e.getErrors()));
+        } catch (RuntimeException e) {
+            return ResponseEntity.badRequest()
+                .body(Collections.singletonMap("error", e.getMessage()));
+        }
     }
 
     @GetMapping("/history/{pixCodeId}")

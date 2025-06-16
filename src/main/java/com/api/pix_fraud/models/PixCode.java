@@ -13,7 +13,7 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 
 @Entity
-@Table(name = "\"pix_code\"")
+@Table(name = "pix_code")
 public class PixCode {
 
     @Id
@@ -24,11 +24,16 @@ public class PixCode {
     private String code;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id", nullable = false)
-    private Person user;
+    @JoinColumn(name = "person_id", nullable = false)
+    private Person person;
 
     @Column(name = "created_at", updatable = false)
     private LocalDateTime createdAt = LocalDateTime.now();
+
+
+
+    public PixCode() {
+    }
 
     public Long getId() {
         return id;
@@ -46,12 +51,12 @@ public class PixCode {
         this.code = code;
     }
 
-    public Person getUser() {
-        return user;
+    public Person getPerson() {
+        return person;
     }
 
-    public void setUser(Person user) {
-        this.user = user;
+    public void setPerson(Person person) {
+        this.person = person;
     }
 
     public LocalDateTime getCreatedAt() {

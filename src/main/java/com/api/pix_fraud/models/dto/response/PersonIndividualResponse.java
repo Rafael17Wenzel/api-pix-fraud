@@ -1,6 +1,7 @@
 package com.api.pix_fraud.models.dto.response;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 public class PersonIndividualResponse {
 
@@ -12,6 +13,8 @@ public class PersonIndividualResponse {
     private String name;
     private String cpf;
     private LocalDate birthDate;
+
+    private LocalDateTime createdAt;
 
 
     public PersonIndividualResponse() {
@@ -73,5 +76,9 @@ public class PersonIndividualResponse {
 
     public void setBirthDate(LocalDate birthDate) {
         this.birthDate = birthDate;
+    }
+
+    public LocalDateTime getCreatedAt() {
+        return createdAt;
     }
 }
