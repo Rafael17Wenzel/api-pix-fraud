@@ -75,5 +75,17 @@ public class BlacklistService {
                         .map(Blacklist::getUser)
                         .collect(Collectors.toList());
     }
+
+    public void removeUserFromBlacklist(Long id) {
+        Optional<Blacklist> entry = blacklistRepository.findByUserId(id);
+        if (!entry.isPresent()) {
+            throw new RuntimeException("Usuário não está na blacklist.");
+        }
+
+        blacklistRepository.delete(entry.get());
+
+        Optional<Person> person = userRepository.findById(id);
+        person.ifPresent(p -> auditService.log(p, "Remoção da blacklist", "Usuário removido da blacklist, ID: " + id));
+    }
     
 }

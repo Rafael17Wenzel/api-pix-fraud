@@ -8,7 +8,7 @@ import org.springframework.stereotype.Service;
 
 import com.api.pix_fraud.models.PixCode;
 import com.api.pix_fraud.models.PixCodeHistory;
-import com.api.pix_fraud.models.dto.request.PixCodeRequest;
+import com.api.pix_fraud.models.dto.request.PixCodeDTO;
 import com.api.pix_fraud.models.dto.response.PixCodeResponse;
 import com.api.pix_fraud.exceptions.ValidationException;
 import com.api.pix_fraud.models.Person;
@@ -36,7 +36,7 @@ public class PixCodeService {
         this.auditService = auditService;
     }
 
-    public PixCode createPixCode(PixCodeRequest pixCodeRequest) {
+    public PixCode createPixCode(PixCodeDTO pixCodeRequest) {
         List<String> errors = new ArrayList<>();
 
         if (pixCodeRequest.getCode() == null || pixCodeRequest.getCode().trim().isEmpty()) {

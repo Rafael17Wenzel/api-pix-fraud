@@ -75,5 +75,18 @@ public class WhitelistService {
                         .map(Whitelist::getUser)
                         .collect(Collectors.toList());
     }
+
+    public void removeUserFromWhitelist(Long id) {
+        Optional<Whitelist> entry = whitelistRepository.findByUserId(id);
+        if (!entry.isPresent()) {
+            throw new RuntimeException("Usuário não está na whitelist.");
+        }
+
+        whitelistRepository.delete(entry.get());
+
+        Optional<Person> person = userRepository.findById(id);
+        person.ifPresent(p -> auditService.log(p, "Remoção da whitelist", "Usuário removido da whitelist, ID: " + id));
+    }
+
     
 }

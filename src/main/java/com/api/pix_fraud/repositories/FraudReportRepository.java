@@ -7,5 +7,5 @@ import com.api.pix_fraud.models.FraudReport;
 import java.util.List;
 
 public interface FraudReportRepository extends JpaRepository<FraudReport, Long> {
-    List<FraudReport> findByUserId(Long userId);
+    List<FraudReport> findByPersonId(Long personId);
 }

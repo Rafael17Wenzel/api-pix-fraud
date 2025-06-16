@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.api.pix_fraud.exceptions.ValidationException;
 import com.api.pix_fraud.models.PixCode;
 import com.api.pix_fraud.models.PixCodeHistory;
-import com.api.pix_fraud.models.dto.request.PixCodeRequest;
+import com.api.pix_fraud.models.dto.request.PixCodeDTO;
 import com.api.pix_fraud.services.PixCodeService;
 
 
@@ -29,7 +29,7 @@ public class PixCodeController {
     }
 
     @PostMapping
-    public ResponseEntity<?> createPixCode(@RequestBody PixCodeRequest pixCodeRequest) {
+    public ResponseEntity<?> createPixCode(@RequestBody PixCodeDTO pixCodeRequest) {
         try {
             PixCode createdPixCode = pixCodeService.createPixCode(pixCodeRequest);
 

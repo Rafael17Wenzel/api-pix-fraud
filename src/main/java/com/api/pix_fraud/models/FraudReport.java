@@ -26,12 +26,11 @@ public class FraudReport {
     private PixCode pixCode;
 
     @ManyToOne(optional = false)
-    @JoinColumn(name = "user_id")
-    private Person user;
+    @JoinColumn(name = "person_id")
+    private Person person;
 
-    @ManyToOne(optional = false)
-    @JoinColumn(name = "fraud_type_id")
-    private FraudType fraudType;
+    @Column(name = "description")
+    private String description;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
@@ -56,20 +55,20 @@ public class FraudReport {
         this.pixCode = pixCode;
     }
 
-    public Person getUser() {
-        return user;
+    public Person getPerson() {
+        return person;
     }
 
-    public void setUser(Person user) {
-        this.user = user;
+    public void setPerson(Person person) {
+        this.person = person;
     }
 
-    public FraudType getFraudType() {
-        return fraudType;
+    public String getDescription() {
+        return description;
     }
 
-    public void setFraudType(FraudType fraudType) {
-        this.fraudType = fraudType;
+    public void setDescription(String description) {
+        this.description = description;
     }
 
 

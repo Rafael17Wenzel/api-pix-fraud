@@ -2,7 +2,7 @@ package com.api.pix_fraud.models.dto.request;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-public class PixCodeRequest {
+public class PixCodeDTO {
 
     private String code;
 
